@@ -86,7 +86,8 @@ if __name__== '__main__': # Para indicar que se inicia el bot
     # Este recibira los argumentos, el primero sera el comando, y el segundo la descripcion del mmismo
     bot.set_my_commands([
         telebot.types.BotCommand("/start", "Inicia el bot"), 
-        telebot.types.BotCommand("/boom", "Explota el mundo")
+        telebot.types.BotCommand("/boom", "Explota el mundo"),
+        telebot.types.BotCommand("/alta", "Pon tu nombre")
         ])
     print('Iniciando el bot') 
     hilo_bot = threading.Thread(name="hilo_bot", target=recibir_mensajes)
