@@ -2,8 +2,8 @@ from email import message
 from config import *
 import telebot # Para manejar la API de telegram
 from telebot.types import ReplyKeyboardMarkup # Para crear botonoes
-from telebot.types import ForceReply # Para citar un mensaje
-
+from telebot.types import ForceReply # Para citar un 
+from telebot.types import ReplyKeyboardRemove # Para eliminar los botones
 
 # Instanciamos el bot de telegram
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
@@ -14,8 +14,9 @@ usuarios ={}
 @bot.message_handler(commands=["start", "help", "ayuda"])
 
 def cmd_start(message):
+    markup = ReplyKeyboardRemove()
     # Muestra los comandos disponibles
-    bot.send_message(message.chat.id, "Usa el comando /alta para introducir tus datos")
+    bot.send_message(message.chat.id, "Usa el comando /alta para introducir tus datos", reply_markup = markup)
 
 # Responde al comando /alta
 @bot.message_handler(commands=["alta"])
@@ -71,9 +72,10 @@ def guardar_datos_usuario(message):
         texto+= f"<code>NOMBRE: </code>{usuarios[message.chat.id]['nombre']}\n"
         texto+= f"<code>EDAD: </code>{usuarios[message.chat.id]['edad']}\n"
         texto+= f"<code>GENERO: </code>{usuarios[message.chat.id]['sexo']}\n"
-        bot.send_message(message.chat.id, texto, parse_mode="html")
+        markup = ReplyKeyboardRemove() # Instanciamos
+        bot.send_message(message.chat.id, texto, parse_mode="html", reply_markup = markup)
         print(usuarios)        
-        
+        del usuarios[message.chat.id]
         
         
 # """--- CUERPO DEL BOT ---"""
