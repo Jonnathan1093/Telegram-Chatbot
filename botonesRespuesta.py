@@ -1,4 +1,3 @@
-from email import message
 from config import *
 import telebot # Para manejar la API de telegram
 from telebot.types import ReplyKeyboardMarkup # Para crear botonoes
