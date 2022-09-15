@@ -25,8 +25,15 @@ def cmd_jugar(message):
     numero = randint(1, 10)
     cid = message.chat.id
     usuarios[cid] = numero
-    botones = ReplyKeyboardMarkup(input_field_placeholder="Pulsa un boton")
-    botones.add("1","2","3","4","5","6","7","8","9","10")
+    botones = ReplyKeyboardMarkup(
+        input_field_placeholder="Pulsa un boton",
+        row_width = 5) # Row_with nos permite modificar los botones en diferentes columnas, el maximo de este valor es 12 y el minimo 1, solo aplica al metodo add
+    # botones.add("1","2","3","4","5","6","7","8","9","10")
+    # Estos  valores nos permitira mostrar el valor de como queremos que aparezca
+    botones.row("1")
+    botones.row("2", "3")
+    botones.row("4", "5", "6")
+    botones.row("7", "8", "9", "10")
     msg = bot.send_message(message.chat.id, "Adivina el numero entre 1 y 10", reply_markup = botones)
     # Registramos la respuesta en la funcion indicada 
     bot.register_next_step_handler(msg, comprobar_numero) # Asignamos la variable y funcion
