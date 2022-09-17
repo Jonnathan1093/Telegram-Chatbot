@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import os
 import pickle
 
-N_RES_PAG = 5 # Numero de resultados a mostrar en cada pagina
+N_RES_PAG = 10 # Numero de resultados a mostrar en cada pagina
 MAX_ANCHO_ROW = 8 # Maximo de botones por fila(limitacion de telegram)
 DIR = {"busquedas": "./busquedas/"} # Donde se guardaran los archivos de las busquedas
 
@@ -51,7 +51,7 @@ def respuesta_botonesInline(call):
     if call.data == "anterior": # Boton anterior
     # Si ya estamos en la primera pagina
         if datos["pag"] == 0:
-            bot.answer_callback_query(call.id, "Ya estas en la primera pagina")
+            bot.answer_callback_query(call.id, "Ya estas en la primera pagina") # Cada pulsacion de un boton tiene un identificador
         else:
             datos["pag"]-= 1 # Retrocedemos una pagina
             pickle.dump(datos, open(f"{DIR['busquedas']}{cid}_{mid}","wb"))
@@ -113,19 +113,27 @@ def cmd_buscar(message):
 # Crea o edita un mensaje de la pagina   
 def mostrar_pagina(lista, cid, pag = 0, mid=None):
 # Creamos la botonera
-    markup = InlineKeyboardMarkup()
-    b_anterior = InlineKeyboardButton("←", callback_data="anterior") # Boton de pagina anterior
-    b_cerrar = InlineKeyboardButton("X", callback_data="cerrar") # Boton de cerrar
-    b_siguiente = InlineKeyboardButton("→", callback_data="siguiente") # Boton de pagina siguiente
+    markup = InlineKeyboardMarkup(row_width= MAX_ANCHO_ROW)
+    b_anterior = InlineKeyboardButton("⬅️", callback_data="anterior") # Boton de pagina anterior
+    b_cerrar = InlineKeyboardButton("❌", callback_data="cerrar") # Boton de cerrar
+    b_siguiente = InlineKeyboardButton("➡️", callback_data="siguiente") # Boton de pagina siguiente
     inicio = pag*N_RES_PAG # Nro resultado inicio de pagina en curso
     fin =  inicio + N_RES_PAG # Nro resultado fin de pagina en curso | fin = pag * N_RES_PAG + N_RES_PAG
-    markup.row(b_anterior, b_cerrar, b_siguiente) # Ponemos lo botones
+    # Controlamos que el ultimo resultado de la pagina no supere el total de resulados
+    if fin > len(lista):
+        fin = len(lista)
     mensaje = f'<i>Resultados {inicio+1}-{fin} de {len(lista)}</i>\n\n' # Este seria el encabezado del mensaje
-    # Montamos el listado de los resultados
+    # Montamos el listado de los resultados, con un bucle for recorremos
     n = 1
+    botones = [] # Botones de indice en la pagina
     for item in lista[inicio:fin]:
-        mensaje+= f'[<b>{n}</b>] <a href="{item[1]}"> {item[0]}</a>\n' # Añadimos texto 
-        n+= 1
+        botones.append(InlineKeyboardButton(str(n), url=item[1]))
+        # mensaje+= f'[<b>{n}</b>] <a href="{item[1]}"> {item[0]}</a>\n' # Añadimos texto y hacemos uso de un hiperenlace
+        mensaje+= f'[<b>{n}</b>] {item[0]}\n' # Asi se mostrara solo el titulo
+        n+= 1 # Esta sera en la siguiente vuelta del ciclo, basicamente valdria 2
+    # Añadimos los botones al numero de cada indice
+    markup.add(*botones)
+    markup.row(b_anterior, b_cerrar, b_siguiente) # Ponemos lo botones
     if mid:
         bot.edit_message_text(mensaje, cid, mid, reply_markup=markup, parse_mode="html", disable_web_page_preview=True)
     else:
