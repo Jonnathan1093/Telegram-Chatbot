@@ -1,0 +1,8 @@
+beautifulsoup4==4.11.1
+Flask==2.2.2
+pyngrok==5.1.0
+pyTelegramBotAPI==4.7.0
+requests==2.28.1
+selenium==4.4.3
+selenium_stealth==1.0.6
+waitress==2.1.2
