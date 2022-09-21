@@ -1,3 +1,5 @@
+from crypt import methods
+from turtle import update
 from config import *
 import os
 import sys
@@ -10,8 +12,20 @@ from selenium.webdriver.support.ui import WebDriverWait #Para esperar elementos 
 from selenium.webdriver.common.by import By #Para esperar por tipos de elemento
 from selenium.webdriver.support import expected_conditions as ec
 import threading # Para poder crear hilos
+from flask import Flask, request
+from waitress import serve
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
+web_server = Flask(__name__)
+
+@web_server.route("/", methods=["POST"])
+
+def webhook():
+# Si el POST recibido es un JSON
+    if request.headers.get("content-type") == "application/json":
+        update = telebot.types.Update.de_json(request.stream.read().decode("uft-8"))
+        bot.process_new_updates([update])
+        return "Ok", 200
 
 @bot.message_handler(commands=["inicio"]) 
 def cmd_start(message):
@@ -97,6 +111,12 @@ def polling():
     time.sleep(1)
     bot.infinity_polling()
     
+def arrancar_web_server():
+    bot.remove_webhook()
+    time.sleep(1)
+    bot.set_webhook(url=f"https://{APP}.herohuapp.com")
+    serve(web_server, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    
 # Main
 if __name__ == "__main__":
     print("INIICIANDO BOT")        
@@ -112,7 +132,12 @@ if __name__ == "__main__":
         pass
     # Iniciamos la recepcion de mensajes en telegram
     print("Iniciando telebot")
-    hilo = threading.Thread(name="hilo_polling", target=polling)
+    # si se ejecuta heroku
+    if os.environ.get("DYNO_RAM"):
+        hilo = threading.Thread(name="hilo_web_server", target=arrancar_web_server)
+    else: #Si no se ejecuta Heroku
+        hilo = threading.Thread(name="hilo_polling", target=polling)
+    # Iniciamos el hilo que corresponda
     hilo.start()
     print("Bot Iniciado")
     bot.send_message(MI_CHAT_ID, "Bot iniciado")
