@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+from crypt import methods
+from turtle import update
+>>>>>>> d0e57b6eb4d77e5db4b1aad62839edd8a59a4d55
 from config import *
 import os
 import sys
@@ -11,16 +16,28 @@ from selenium.webdriver.common.by import By #Para esperar por tipos de elemento
 from selenium.webdriver.support import expected_conditions as ec
 import threading # Para poder crear hilos
 from flask import Flask, request
+<<<<<<< HEAD
 from waitress import serve # Poder arrancar el servidor web en un entorno de produccion
+=======
+from waitress import serve
+>>>>>>> d0e57b6eb4d77e5db4b1aad62839edd8a59a4d55
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 web_server = Flask(__name__)
 
 @web_server.route("/", methods=["POST"])
+<<<<<<< HEAD
 def webhook():
 # Si el POST recibido es un JSON
     if request.headers.get("content-type") == "application/json":
         update = telebot.types.Update.de_json(request.stream.read().decode('utf-8'))
+=======
+
+def webhook():
+# Si el POST recibido es un JSON
+    if request.headers.get("content-type") == "application/json":
+        update = telebot.types.Update.de_json(request.stream.read().decode("uft-8"))
+>>>>>>> d0e57b6eb4d77e5db4b1aad62839edd8a59a4d55
         bot.process_new_updates([update])
         return "Ok", 200
 
@@ -111,8 +128,13 @@ def polling():
 def arrancar_web_server():
     bot.remove_webhook()
     time.sleep(1)
+<<<<<<< HEAD
     bot.set_webhook(url=f"https://{APP}.herokuapp.com/")
     serve(web_server, host="0.0.0.0", port=int(os.environ.get("PORT",5000)))
+=======
+    bot.set_webhook(url=f"https://{APP}.herohuapp.com")
+    serve(web_server, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+>>>>>>> d0e57b6eb4d77e5db4b1aad62839edd8a59a4d55
     
 # Main
 if __name__ == "__main__":

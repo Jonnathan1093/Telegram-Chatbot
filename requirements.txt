@@ -1,6 +1,9 @@
 beautifulsoup4==4.11.1
 Flask==2.2.2
+<<<<<<< HEAD
 pipreqs==0.4.11
+=======
+>>>>>>> d0e57b6eb4d77e5db4b1aad62839edd8a59a4d55
 pyngrok==5.1.0
 pyTelegramBotAPI==4.7.0
 requests==2.28.1

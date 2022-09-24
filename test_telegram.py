@@ -90,7 +90,10 @@ if __name__== '__main__': # Para indicar que se inicia el bot
         telebot.types.BotCommand("/alta", "Pon tu nombre"),
         telebot.types.BotCommand("/jugar", "Escoge un numero y adivina"),
         telebot.types.BotCommand("/botones", "Botones Inline"),
+<<<<<<< HEAD
         telebot.types.BotCommand("/inicio", "Bucar por enlaces"),
+=======
+>>>>>>> d0e57b6eb4d77e5db4b1aad62839edd8a59a4d55
         ])
     print('Iniciando el bot') 
     hilo_bot = threading.Thread(name="hilo_bot", target=recibir_mensajes)
